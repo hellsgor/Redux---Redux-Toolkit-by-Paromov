@@ -1,9 +1,14 @@
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
-import { CounterId, DecrementAction, IncrementAction, store } from './store';
-import { useEffect, useReducer, useRef } from 'react';
-import { RootState } from './store';
+import {
+  CounterId,
+  DecrementAction,
+  IncrementAction,
+  useAppDispatch,
+  useAppSelector,
+  selectCounter,
+} from './store';
 
 function App() {
   return (
@@ -31,27 +36,13 @@ function App() {
   );
 }
 
-const selectCounter = (state: RootState, counterId: CounterId) =>
-  state.counters[counterId];
-
 export function Counter({ counterId }: { counterId: CounterId }) {
-  const [, forceUpdate] = useReducer((x) => x + 1, 0);
-  const prevStateRef = useRef<ReturnType<typeof selectCounter>>(undefined);
-  const counterState = selectCounter(store.getState(), counterId);
+  const dispatch = useAppDispatch();
+  const counterState = useAppSelector((state) =>
+    selectCounter(state, counterId),
+  );
 
-  useEffect(() => {
-    const unsubscribe = store.subscribe(() => {
-      const currentState = selectCounter(store.getState(), counterId);
-      const prevState = prevStateRef.current;
-
-      console.log(currentState !== prevState);
-      if (currentState !== prevState) forceUpdate();
-
-      prevStateRef.current = currentState;
-    });
-
-    return unsubscribe;
-  }, []);
+  console.log('render', counterId);
 
   return (
     <>
@@ -60,7 +51,7 @@ export function Counter({ counterId }: { counterId: CounterId }) {
 
         <button
           onClick={() =>
-            store.dispatch({
+            dispatch({
               type: 'increment',
               payload: { counterId },
             } satisfies IncrementAction)
@@ -71,7 +62,7 @@ export function Counter({ counterId }: { counterId: CounterId }) {
 
         <button
           onClick={() =>
-            store.dispatch({
+            dispatch({
               type: 'decrement',
               payload: { counterId },
             } satisfies DecrementAction)

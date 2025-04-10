@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 
 type CounterState = {
   counter: number;
@@ -70,4 +71,12 @@ export const store = configureStore({
   reducer,
 });
 
+export const selectCounter = (state: RootState, counterId: CounterId) =>
+  state.counters[counterId];
+
 export type RootState = ReturnType<typeof store.getState>;
+export type RootDispatch = typeof store.dispatch;
+
+export const useAppSelector = useSelector.withTypes<RootState>();
+export const useAppDispatch = useDispatch.withTypes<RootDispatch>();
+export const useAppStore = useStore.withTypes<typeof store>();
