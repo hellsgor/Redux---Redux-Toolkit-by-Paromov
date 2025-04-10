@@ -3,8 +3,6 @@ import viteLogo from '/vite.svg';
 import './App.css';
 import {
   CounterId,
-  DecrementAction,
-  IncrementAction,
   useAppDispatch,
   useAppSelector,
   selectCounter,
@@ -54,7 +52,7 @@ export function Counter({ counterId }: { counterId: CounterId }) {
             dispatch({
               type: 'increment',
               payload: { counterId },
-            } satisfies IncrementAction)
+            })
           }
         >
           increment
@@ -65,7 +63,7 @@ export function Counter({ counterId }: { counterId: CounterId }) {
             dispatch({
               type: 'decrement',
               payload: { counterId },
-            } satisfies DecrementAction)
+            })
           }
         >
           decrement
