@@ -2,7 +2,8 @@ import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
 import { CounterId, DecrementAction, IncrementAction, store } from './store';
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
+import { RootState } from './store';
 
 function App() {
   return (
@@ -30,12 +31,23 @@ function App() {
   );
 }
 
+const selectCounter = (state: RootState, counterId: CounterId) =>
+  state.counters[counterId];
+
 export function Counter({ counterId }: { counterId: CounterId }) {
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
+  const prevStateRef = useRef<ReturnType<typeof selectCounter>>(undefined);
+  const counterState = selectCounter(store.getState(), counterId);
 
   useEffect(() => {
     const unsubscribe = store.subscribe(() => {
-      forceUpdate();
+      const currentState = selectCounter(store.getState(), counterId);
+      const prevState = prevStateRef.current;
+
+      console.log(currentState !== prevState);
+      if (currentState !== prevState) forceUpdate();
+
+      prevStateRef.current = currentState;
     });
 
     return unsubscribe;
@@ -44,7 +56,7 @@ export function Counter({ counterId }: { counterId: CounterId }) {
   return (
     <>
       <div className="card">
-        <p>counter: {store.getState().counters[counterId]?.counter ?? 0}</p>
+        <p>counter: {counterState?.counter ?? 0}</p>
 
         <button
           onClick={() =>
