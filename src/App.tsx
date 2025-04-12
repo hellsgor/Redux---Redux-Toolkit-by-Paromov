@@ -7,6 +7,7 @@ import {
   useAppSelector,
   selectCounter,
 } from "./store";
+import { UsersList } from "./UsersList";
 
 function App() {
   return (
@@ -15,17 +16,8 @@ function App() {
         <Counter counterId="first" />
         <Counter counterId="second" />
       </div>
-      <Counter counterId="first" />
-      <Counter counterId="second" />
-      <h1>Vite + React</h1>
 
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-
-      <p>
-        Edit <code>src/App.tsx</code> and save to test HMR
-      </p>
+      <UsersList />
     </>
   );
 }
