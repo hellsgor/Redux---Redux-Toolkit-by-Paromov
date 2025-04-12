@@ -42,6 +42,8 @@ export function UsersList() {
     setSortType((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
+  console.log("render UsersList");
+
   return (
     <div className="relative flex flex-col gap-y-10">
       {selectedUser && <SelectedUser user={selectedUser} />}

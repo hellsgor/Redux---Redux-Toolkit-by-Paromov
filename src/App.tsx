@@ -28,6 +28,8 @@ export function Counter({ counterId }: { counterId: CounterId }) {
     selectCounter(state, counterId),
   );
 
+  console.log(`render counter ${counterId}`);
+
   return (
     <>
       <div className="flex items-center gap-x-4">
