@@ -1,23 +1,19 @@
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
+// import reactLogo from './assets/react.svg';
+// import viteLogo from '/vite.svg';
+import "./App.css";
 import {
   CounterId,
   useAppDispatch,
   useAppSelector,
   selectCounter,
-} from './store';
+} from "./store";
 
 function App() {
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="relative mb-10 flex items-center justify-center gap-x-10">
+        <Counter counterId="first" />
+        <Counter counterId="second" />
       </div>
       <Counter counterId="first" />
       <Counter counterId="second" />
@@ -40,17 +36,13 @@ export function Counter({ counterId }: { counterId: CounterId }) {
     selectCounter(state, counterId),
   );
 
-  console.log('render', counterId);
-
   return (
     <>
-      <div className="card">
-        <p>counter: {counterState?.counter ?? 0}</p>
-
+      <div className="flex items-center gap-x-4">
         <button
           onClick={() =>
             dispatch({
-              type: 'increment',
+              type: "increment",
               payload: { counterId },
             })
           }
@@ -58,10 +50,14 @@ export function Counter({ counterId }: { counterId: CounterId }) {
           increment
         </button>
 
+        <p>
+          {counterId}: {counterState?.counter ?? 0}
+        </p>
+
         <button
           onClick={() =>
             dispatch({
-              type: 'decrement',
+              type: "decrement",
               payload: { counterId },
             })
           }
