@@ -1,5 +1,5 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import { configureStore, createSelector } from "@reduxjs/toolkit";
+import { useDispatch, useSelector, useStore } from "react-redux";
 
 type CounterState = {
   counter: number;
@@ -32,30 +32,30 @@ type State = {
 };
 
 export type IncrementAction = {
-  type: 'increment';
+  type: "increment";
   payload: {
     counterId: CounterId;
   };
 };
 
 export type DecrementAction = {
-  type: 'decrement';
+  type: "decrement";
   payload: {
     counterId: CounterId;
   };
 };
 
 export type UserSelectedAction = {
-  type: 'userSelected';
+  type: "userSelected";
   payload: UserId;
 };
 
 export type UserClearSelectedAction = {
-  type: 'userCleared';
+  type: "userCleared";
 };
 
 export type UsersStoredAction = {
-  type: 'usersStored';
+  type: "usersStored";
   payload: {
     users: User[];
   };
@@ -81,7 +81,7 @@ const initialState: State = {
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
-    case 'increment': {
+    case "increment": {
       const { counterId } = action.payload;
       const currentCounter = state.counters[counterId] ?? initialCounterState;
       return {
@@ -95,7 +95,7 @@ const reducer = (state = initialState, action: Action): State => {
         },
       };
     }
-    case 'decrement': {
+    case "decrement": {
       const { counterId } = action.payload;
       const currentCounter = state.counters[counterId] ?? initialCounterState;
       return {
@@ -109,21 +109,24 @@ const reducer = (state = initialState, action: Action): State => {
         },
       };
     }
-    case 'usersStored': {
+    case "usersStored": {
       const { users } = action.payload;
       return {
         ...state,
         users: {
           ...state.users,
-          entities: users.reduce((acc, user) => {
-            acc[user.id] = user;
-            return acc;
-          }, {} as Record<UserId, User>),
+          entities: users.reduce(
+            (acc, user) => {
+              acc[user.id] = user;
+              return acc;
+            },
+            {} as Record<UserId, User>,
+          ),
           ids: users.map((user) => user.id),
         },
       };
     }
-    case 'userSelected': {
+    case "userSelected": {
       const userId = action.payload;
       return {
         ...state,
@@ -133,7 +136,7 @@ const reducer = (state = initialState, action: Action): State => {
         },
       };
     }
-    case 'userCleared': {
+    case "userCleared": {
       return {
         ...state,
         users: {
@@ -152,7 +155,7 @@ export const store = configureStore({
 });
 
 store.dispatch({
-  type: 'usersStored',
+  type: "usersStored",
   payload: { users },
 } satisfies UsersStoredAction);
 
@@ -165,3 +168,4 @@ export type RootDispatch = typeof store.dispatch;
 export const useAppSelector = useSelector.withTypes<RootState>();
 export const useAppDispatch = useDispatch.withTypes<RootDispatch>();
 export const useAppStore = useStore.withTypes<typeof store>();
+export const createAppSelector = createSelector.withTypes<RootState>();
