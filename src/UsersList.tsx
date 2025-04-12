@@ -12,8 +12,11 @@ export function UsersList() {
 
   const ids = useAppSelector((state) => state.users.ids);
   const entities = useAppSelector((state) => state.users.entities);
-  const selectedUserId = useAppSelector((state) => state.users.selectedUserId);
-  const selectedUser = selectedUserId ? entities[selectedUserId] : undefined;
+  const selectedUser = useAppSelector((state) =>
+    state.users.selectedUserId
+      ? state.users.entities[state.users.selectedUserId]
+      : undefined,
+  );
 
   const sortedUsers = useMemo(
     () =>
