@@ -1,4 +1,8 @@
-import { configureStore, createSelector } from "@reduxjs/toolkit";
+import {
+  combineReducers,
+  configureStore,
+  createSelector,
+} from "@reduxjs/toolkit";
 import { useDispatch, useSelector, useStore } from "react-redux";
 
 type CounterState = {
@@ -26,11 +30,6 @@ type UsersState = {
   entities: Record<UserId, User>;
   ids: UserId[];
   selectedUserId: UserId | undefined;
-};
-
-type State = {
-  counters: CountersState;
-  users: UsersState;
 };
 
 export type IncrementAction = {
@@ -77,10 +76,6 @@ const initialUsersState: UsersState = {
 };
 const initialCounterState: CounterState = { counter: 0 };
 const initialCountersState: CountersState = {};
-const initialState: State = {
-  counters: {},
-  users: initialUsersState,
-};
 
 const usersReducer = (
   state = initialUsersState,
@@ -118,6 +113,7 @@ const usersReducer = (
       return state;
   }
 };
+
 const countersReducer = (
   state = initialCountersState,
   action: Action,
@@ -150,12 +146,10 @@ const countersReducer = (
   }
 };
 
-const reducer = (state = initialState, action: Action): State => {
-  return {
-    users: usersReducer(state.users, action),
-    counters: countersReducer(state.counters, action),
-  };
-};
+const reducer = combineReducers({
+  users: usersReducer,
+  counters: countersReducer,
+});
 
 export const store = configureStore({
   reducer,
