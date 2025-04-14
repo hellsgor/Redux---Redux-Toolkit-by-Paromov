@@ -1,15 +1,16 @@
 import { memo } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { UserClearSelectedAction } from "../users.slice";
-import { selectSelectedUser } from "../users.selectors";
+import { usersSlice } from "../users.slice";
 
 export const SelectedUser = memo(function SelectedUser() {
-  const selectedUser = useAppSelector((state) => selectSelectedUser(state));
+  const selectedUser = useAppSelector((state) =>
+    usersSlice.selectors.selectedUser(state),
+  );
 
   console.log("render SelectedUser");
   const dispatch = useAppDispatch();
   const handleClick = () => {
-    dispatch({ type: "userCleared" } satisfies UserClearSelectedAction);
+    dispatch(usersSlice.actions.clearSelected());
   };
 
   if (!selectedUser) {

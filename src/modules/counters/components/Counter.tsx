@@ -1,6 +1,10 @@
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { selectCounter } from "../counters.selectors";
-import { CounterId, decrementAction, incrementAction } from "../counters.slice";
+import {
+  CounterId,
+  decrementAction,
+  incrementAction,
+  selectCounter,
+} from "../counters.slice";
 
 export function Counter({ counterId }: { counterId: CounterId }) {
   const dispatch = useAppDispatch();

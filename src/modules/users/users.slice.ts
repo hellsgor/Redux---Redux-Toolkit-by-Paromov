@@ -1,3 +1,5 @@
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
+
 export type UserId = string;
 export type User = {
   id: UserId;
@@ -10,24 +12,6 @@ type UsersState = {
   ids: UserId[];
   selectedUserId: UserId | undefined;
 };
-
-export type UserSelectedAction = {
-  type: "userSelected";
-  payload: UserId;
-};
-
-export type UserClearSelectedAction = {
-  type: "userCleared";
-};
-
-export type UsersStoredAction = {
-  type: "usersStored";
-  payload: {
-    users: User[];
-  };
-};
-
-type Action = UserSelectedAction | UserClearSelectedAction | UsersStoredAction;
 
 export const initialUsersList: User[] = Array.from(
   { length: 3000 },
@@ -44,39 +28,47 @@ const initialUsersState: UsersState = {
   selectedUserId: undefined,
 };
 
-export const usersReducer = (
-  state = initialUsersState,
-  action: Action,
-): UsersState => {
-  switch (action.type) {
-    case "usersStored": {
+export const usersSlice = createSlice({
+  name: "users",
+  initialState: initialUsersState,
+  reducers: {
+    stored: (state, action: PayloadAction<{ users: User[] }>) => {
       const { users } = action.payload;
-      return {
-        ...state,
-        entities: users.reduce(
-          (acc, user) => {
-            acc[user.id] = user;
-            return acc;
-          },
-          {} as Record<UserId, User>,
-        ),
-        ids: users.map((user) => user.id),
-      };
-    }
-    case "userSelected": {
-      const userId = action.payload;
-      return {
-        ...state,
-        selectedUserId: userId,
-      };
-    }
-    case "userCleared": {
-      return {
-        ...state,
-        selectedUserId: undefined,
-      };
-    }
-    default:
-      return state;
-  }
-};
+
+      state.entities = users.reduce(
+        (acc, user) => {
+          acc[user.id] = user;
+          return acc;
+        },
+        {} as Record<UserId, User>,
+      );
+      state.ids = users.map((user) => user.id);
+    },
+    select: (state, action: PayloadAction<UserId>) => {
+      state.selectedUserId = action.payload;
+    },
+    clearSelected: (state) => {
+      state.selectedUserId = undefined;
+    },
+  },
+  selectors: {
+    selectedUser: (state) =>
+      state.selectedUserId ? state.entities[state.selectedUserId] : undefined,
+
+    sortedUsers: createSelector(
+      (state: UsersState) => state.ids,
+      (state: UsersState) => state.entities,
+      (_: UsersState, sort: "asc" | "desc") => sort,
+      (ids, entities, sort) =>
+        ids
+          .map((id) => entities[id])
+          .toSorted((userA, userB) => {
+            if (sort === "asc") {
+              return userA.name.localeCompare(userB.name);
+            } else {
+              return userB.name.localeCompare(userA.name);
+            }
+          }),
+    ),
+  },
+});

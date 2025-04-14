@@ -1,4 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
+import { AppState } from "../../store";
 
 type CounterState = {
   counter: number;
@@ -34,3 +35,6 @@ export const countersReducer = createReducer(
     });
   },
 );
+
+export const selectCounter = (state: AppState, counterId: CounterId) =>
+  state.counters[counterId];

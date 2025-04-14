@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useAppSelector } from "../../../store";
 import { SelectedUser } from "./SelectedUser";
-import { selectSortedUsers } from "../users.selectors";
 import { UsersListItem } from "./UsersListItem";
+import { usersSlice } from "../users.slice";
 
 export function UsersList() {
   const [sortType, setSortType] = useState<"asc" | "desc">("asc");
 
-  const sortedUsers = useAppSelector((state) =>
-    selectSortedUsers(state, sortType),
+  const sorted = useAppSelector((state) =>
+    usersSlice.selectors.sortedUsers(state, sortType),
   );
 
   const handleSortButtonsClick = () => {
@@ -32,7 +32,7 @@ export function UsersList() {
       </div>
 
       <div className="flex flex-col gap-y-4">
-        {sortedUsers.map((user) => (
+        {sorted.map((user) => (
           <UsersListItem key={user.id} userId={user.id} />
         ))}
       </div>

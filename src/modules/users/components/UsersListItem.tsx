@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { UserId, UserSelectedAction } from "../users.slice";
+import { UserId, usersSlice } from "../users.slice";
 import { useAppDispatch, useAppSelector } from "../../../store";
 
 export const UsersListItem = memo(function UsersListItem({
@@ -12,10 +12,7 @@ export const UsersListItem = memo(function UsersListItem({
 
   const dispatch = useAppDispatch();
   const handleClick = () => {
-    dispatch({
-      type: "userSelected",
-      payload: user.id,
-    } satisfies UserSelectedAction);
+    dispatch(usersSlice.actions.select(userId));
   };
 
   return (

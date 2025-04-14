@@ -1,32 +1,21 @@
-import {
-  combineReducers,
-  configureStore,
-  createSelector,
-} from "@reduxjs/toolkit";
+import { configureStore, createSelector } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, useStore } from "react-redux";
-import { initialUsersList, usersReducer } from "./modules/users/users.slice";
-import type { UsersStoredAction } from "./modules/users/users.slice";
+import { initialUsersList, usersSlice } from "./modules/users/users.slice";
 import { countersReducer } from "./modules/counters/counters.slice";
 
-const rootReducer = combineReducers({
-  users: usersReducer,
-  counters: countersReducer,
-});
-
-export type RootState = ReturnType<typeof rootReducer>;
-
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: {
+    counters: countersReducer,
+    [usersSlice.name]: usersSlice.reducer,
+  },
 });
 
-export type RootDispatch = typeof store.dispatch;
+store.dispatch(usersSlice.actions.stored({ users: initialUsersList }));
 
-store.dispatch({
-  type: "usersStored",
-  payload: { users: initialUsersList },
-} satisfies UsersStoredAction);
+export type AppState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
-export const useAppSelector = useSelector.withTypes<RootState>();
-export const useAppDispatch = useDispatch.withTypes<RootDispatch>();
+export const useAppSelector = useSelector.withTypes<AppState>();
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 export const useAppStore = useStore.withTypes<typeof store>();
-export const createAppSelector = createSelector.withTypes<RootState>();
+export const createAppSelector = createSelector.withTypes<AppState>();
